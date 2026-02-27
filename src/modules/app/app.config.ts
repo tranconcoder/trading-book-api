@@ -6,6 +6,8 @@ export const APP_CONFIG_NAMESPACE = "app";
 
 // Handle get node env before register config
 export const DEFAULT_NODE_ENV = "development";
+export const SERVER_PORT = Env.getInt(EEnvKey.serverPort, 3000);
+
 export const getEnvPath = () => {
   const nodeEnv = Env.get(EEnvKey.nodeEnv, DEFAULT_NODE_ENV);
   return `.env.${nodeEnv}`;
@@ -18,5 +20,5 @@ export default registerAs(APP_CONFIG_NAMESPACE, () => ({
 
   // Server path
   serverHost: Env.get(EEnvKey.serverHost, "0.0.0.0"),
-  serverPort: Env.getInt(EEnvKey.serverPort, 3000),
+  serverPort: SERVER_PORT,
 }));
