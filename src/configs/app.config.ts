@@ -1,6 +1,6 @@
 import { EEnvKey } from "@/common/enums/env.enum";
 import { Env } from "@/common/utils/env.util";
-import { registerAs } from "@nestjs/config";
+import { ConfigType, registerAs } from "@nestjs/config";
 
 export const APP_CONFIG_NAMESPACE = "app";
 
@@ -8,17 +8,20 @@ export const APP_CONFIG_NAMESPACE = "app";
 export const DEFAULT_NODE_ENV = "development";
 export const SERVER_PORT = Env.getInt(EEnvKey.serverPort, 3000);
 
-export const getEnvPath = () => {
+export const getEnvPath = (): string => {
   const nodeEnv = Env.get(EEnvKey.nodeEnv, DEFAULT_NODE_ENV);
   return `.env.${nodeEnv}`;
 };
 
 // Register configuration to IoC
-export default registerAs(APP_CONFIG_NAMESPACE, () => ({
+const appConfig = registerAs(APP_CONFIG_NAMESPACE, () => ({
   // Node env
   nodeEnv: Env.get(EEnvKey.nodeEnv, DEFAULT_NODE_ENV),
 
   // Server path
-  serverHost: Env.get(EEnvKey.serverHost, "0.0.0.0"),
+  serverHost: Env.get(EEnvKey.serverHost, "localhost"),
   serverPort: SERVER_PORT,
 }));
+
+export default appConfig;
+export type AppConfig = ConfigType<typeof appConfig>;

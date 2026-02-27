@@ -9,4 +9,7 @@ export enum EEnvKey {
   googleOauth2ClientSecret = "GOOGLE_OAUTH2_CLIENT_SECRET",
   googleOauth2CallbackUrl = "GOOGLE_OAUTH2_CALLBACK_URL",
   googleOauth2Scopes = "GOOGLE_OAUTH2_SCOPES",
+
+  // VLUTE
+  studentVluteEmailSuffix = "VLUTE_STUDENT_EMAIL_SUFFIX",
 }
