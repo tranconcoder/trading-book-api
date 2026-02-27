@@ -132,4 +132,26 @@ export class Env {
   static isStaging(): boolean {
     return this.is("NODE_ENV", "staging");
   }
+
+  // ─── Array Getters ──────────────────────────────────────────────────────────
+
+  /**
+   * Get env value as an array of strings (comma-separated).
+   * Returns `defaultValue` if missing or empty.
+   */
+  static getArray(key: string): string[] | undefined;
+  static getArray(key: string, defaultValue: string[]): string[];
+  static getArray(key: string, defaultValue?: string[]): string[] | undefined {
+    const val = process.env[key];
+    if (val === undefined || val.trim() === "") return defaultValue;
+    return val.split(",").map((v) => v.trim());
+  }
+
+  /**
+   * Get env value as an array of strings. Throws if missing or empty.
+   */
+  static getArrayOrThrow(key: string): string[] {
+    const val = this.getOrThrow(key);
+    return val.split(",").map((v) => v.trim());
+  }
 }
