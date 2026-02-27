@@ -2,7 +2,7 @@ import { BaseErrorResponse } from "../base/base-error.response";
 
 /** Catch-all for unidentified errors */
 export class UnknownError extends BaseErrorResponse {
-  constructor(error?: unknown) {
+  constructor(error?: unknown, statusCode?: number) {
     const message =
       error instanceof Error
         ? error.message
@@ -10,6 +10,6 @@ export class UnknownError extends BaseErrorResponse {
           ? error
           : "An unknown error occurred";
 
-    super(message);
+    super(message, statusCode);
   }
 }
