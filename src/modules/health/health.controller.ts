@@ -6,6 +6,10 @@ import {
   DiskHealthIndicator,
 } from "@nestjs/terminus";
 
+/**
+ * Controller for application health checks.
+ * Integrates with NestJS Terminus to provide detailed system status.
+ */
 @Controller("health")
 export class HealthController {
   constructor(
@@ -14,6 +18,14 @@ export class HealthController {
     private disk: DiskHealthIndicator,
   ) {}
 
+  /**
+   * Performs a comprehensive health check of the application.
+   * Checks:
+   * - Heap memory usage (limit: 300MB)
+   * - RSS memory usage (limit: 300MB)
+   * - Disk storage usage (limit: 50% threshold on root path)
+   * @returns A health check result object.
+   */
   @Get()
   @HealthCheck()
   check() {

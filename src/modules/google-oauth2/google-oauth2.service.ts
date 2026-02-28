@@ -6,6 +6,9 @@ import googleOauth2Config, {
 import { OkResponse } from "@/core/response";
 import { Response } from "express";
 
+/**
+ * Interface representing user information returned from the Google OAuth2 flow.
+ */
 export interface GoogleUser {
   email: string;
   firstName: string;
@@ -15,6 +18,9 @@ export interface GoogleUser {
   refreshToken: string;
 }
 
+/**
+ * Service for handling Google OAuth2 specific logic.
+ */
 @Injectable()
 export class GoogleOauth2Service {
   constructor(
@@ -25,6 +31,12 @@ export class GoogleOauth2Service {
     private readonly googleOauth2Config: GoogleOAuth2Config,
   ) {}
 
+  /**
+   * Handles the redirection after a successful Google login.
+   * @param res - The Express response object.
+   * @param user - The authenticated Google user information.
+   * @returns An OkResponse with user data and redirection URL.
+   */
   handleCallback(res: Response, user: GoogleUser) {
     const redirectUrl = `${this.appConfig.clientUrl}${this.googleOauth2Config.redirectUiUrl}`;
 

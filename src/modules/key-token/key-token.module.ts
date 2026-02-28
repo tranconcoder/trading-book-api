@@ -7,6 +7,10 @@ import { EncryptModule } from "../encrypt/encrypt.module";
 import { JwtModule } from "../jwt/jwt.module";
 import { KeyTokenUtil } from "./key-token.util";
 
+/**
+ * Module for handling key token management.
+ * Key tokens store the public keys used to verify users' JWTs, supporting multi-device login and security.
+ */
 @Module({
   imports: [ConfigModule.forFeature(keyTokenConfig), EncryptModule, JwtModule],
   controllers: [KeyTokenController],

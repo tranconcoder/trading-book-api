@@ -8,6 +8,10 @@ import appConfig from "@config/app.config";
 import vluteConfig from "@config/vlute.config";
 import { UserModule } from "../user/user.module";
 
+/**
+ * Module responsible for Google OAuth2 authentication.
+ * Integrates Passport with Google strategy and provides services for handling the auth flow.
+ */
 @Module({
   imports: [
     ConfigModule.forFeature(googleOauth2Config),

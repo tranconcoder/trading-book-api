@@ -10,6 +10,10 @@ import keyTokenConfig from "./key-token.config";
 import type { KeyTokenConfig } from "./key-token.config";
 import { KeyTokenUtil } from "./key-token.util";
 
+/**
+ * Service for managing secure key tokens.
+ * Handles the creation of RSA key pairs for JWT signing/verification and persists public keys.
+ */
 @Injectable()
 export class KeyTokenService {
   constructor(
@@ -22,6 +26,13 @@ export class KeyTokenService {
     private readonly keyTokenUtil: KeyTokenUtil,
   ) {}
 
+  /**
+   * Creates a new key token for a user.
+   * Generates a unique RSA key pair, signs a JWT pair, and stores the public key in Redis.
+   * @param jwtPayload - The payload to be included in the JWT tokens.
+   * @returns A promise resolving to an object containing accessToken and refreshToken.
+   * @throws {InternalServerError} If key generation, signing, or storage fails.
+   */
   public async createKeyToken(jwtPayload: JwtPayload) {
     const { userId } = jwtPayload;
 
@@ -33,7 +44,7 @@ export class KeyTokenService {
     const { accessToken, refreshToken } =
       await this.jwtService.generateTokenPair(jwtPayload, privateKey);
 
-    // 3. Prepare KeyToken entity (New structure)
+    // 3. Prepare KeyToken entity
     const keyToken = new KeyToken({
       userId,
       publicKey,

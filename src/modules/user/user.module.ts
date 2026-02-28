@@ -1,13 +1,23 @@
 import { Module } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UserController } from "./user.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
+import { UserService } from "./user.service";
+import { UserController } from "./user.controller";
+import { ConfigModule } from "@nestjs/config";
+import userConfig from "./user.config";
+import { UserUtil } from "./user.util";
 
+/**
+ * Module responsible for managing user-related functionality.
+ * This includes user data synchronization, profile management, and role-based access control.
+ */
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    ConfigModule.forFeature(userConfig),
+  ],
   controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
+  providers: [UserService, UserUtil],
+  exports: [UserService, UserUtil],
 })
 export class UserModule {}

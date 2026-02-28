@@ -5,11 +5,16 @@ import { InternalServerError } from "@/core/response/errors";
 
 const generateKeyPairAsync = promisify(generateKeyPair);
 
+/**
+ * Service for cryptographic operations, such as RSA key pair generation.
+ */
 @Injectable()
 export class EncryptService {
   /**
-   * Generate a new RSA Key Pair (Private & Public)
-   * Default bit length: 2048
+   * Generates a new RSA Key Pair (Private & Public) using asymmetric encryption.
+   * Default bit length is 2048. Format is PEM and type is SPKI (Public) / PKCS8 (Private).
+   * @returns A promise resolving to an object containing publicKey and privateKey strings.
+   * @throws {InternalServerError} If key generation fails.
    */
   async generateRSAKeyPair(): Promise<{
     publicKey: string;

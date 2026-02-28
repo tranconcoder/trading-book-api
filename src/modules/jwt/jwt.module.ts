@@ -5,6 +5,10 @@ import jwtConfig from "./jwt.config";
 import { JwtService } from "./jwt.service";
 import { JwtController } from "./jwt.controller";
 
+/**
+ * Module responsible for JWT token generation, verification, and decoding.
+ * Wraps @nestjs/jwt and provides custom configuration management.
+ */
 @Module({
   imports: [ConfigModule.forFeature(jwtConfig), NestJwtModule.register({})],
   controllers: [JwtController],

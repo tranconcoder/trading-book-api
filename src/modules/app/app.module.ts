@@ -15,6 +15,12 @@ import { JwtModule } from "../jwt/jwt.module";
 import { UserModule } from "../user/user.module";
 import { KeyTokenModule } from "../key-token/key-token.module";
 
+/**
+ * The root module of the application.
+ * Responsibility:
+ * - Initialize global configurations (Env, Database, Cache).
+ * - Import and orchestrate all feature modules.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({

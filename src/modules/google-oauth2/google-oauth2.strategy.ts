@@ -11,6 +11,10 @@ import { ErrorCode, ErrorMessage, ForbiddenError } from "@/core/response";
 import { UserService } from "../user/user.service";
 import { createSyncUserSchema } from "./google-oauth2.validation";
 
+/**
+ * Passport strategy for authenticating with Google using OAuth 2.0.
+ * Handles token generation, profile validation, and user synchronization.
+ */
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   constructor(
@@ -32,6 +36,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     });
   }
 
+  /**
+   * Validates the Google profile and synchronizes the user into the local database.
+   * Ensures the email domain matches allowed suffixes and that profile info is complete.
+   * @param accessToken - Google access token.
+   * @param refreshToken - Google refresh token.
+   * @param profile - Google profile object.
+   * @param done - Callback to Passport.
+   * @throws {ForbiddenError} If the email domain is not allowed or profile info is incomplete.
+   */
   validate(
     accessToken: string,
     refreshToken: string,

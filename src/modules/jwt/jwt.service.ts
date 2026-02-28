@@ -10,6 +10,10 @@ import {
 } from "@/core/response/errors";
 import { JwtPayload } from "./jwt";
 
+/**
+ * Service for managing JSON Web Tokens (JWT).
+ * Provides methods for generating token pairs, verifying tokens, and decoding tokens.
+ */
 @Injectable()
 export class JwtService {
   constructor(
@@ -19,7 +23,11 @@ export class JwtService {
   ) {}
 
   /**
-   * Generate Access Token using RSA Private Key
+   * Generates an access token using an RSA private key.
+   * @param payload - The data to include in the token.
+   * @param privateKey - The RSA private key for signing.
+   * @returns A promise resolving to the signed access token string.
+   * @throws {InternalServerError} If signing fails.
    */
   async generateAccessToken(
     payload: JwtPayload,
@@ -39,7 +47,11 @@ export class JwtService {
   }
 
   /**
-   * Generate Refresh Token using RSA Private Key
+   * Generates a refresh token using an RSA private key.
+   * @param payload - The data to include in the token.
+   * @param privateKey - The RSA private key for signing.
+   * @returns A promise resolving to the signed refresh token string.
+   * @throws {InternalServerError} If signing fails.
    */
   async generateRefreshToken(
     payload: JwtPayload,
@@ -59,7 +71,11 @@ export class JwtService {
   }
 
   /**
-   * Generate Token Pair (Access + Refresh)
+   * Generates a token pair (access + refresh token) simultaneously.
+   * @param payload - The data to include in both tokens.
+   * @param privateKey - The RSA private key for signing.
+   * @returns An object containing accessToken and refreshToken.
+   * @throws {InternalServerError} If token generation fails.
    */
   async generateTokenPair(payload: JwtPayload, privateKey: string) {
     try {
@@ -76,7 +92,11 @@ export class JwtService {
   }
 
   /**
-   * Verify Token using RSA Public Key
+   * Verifies a JWT token using an RSA public key.
+   * @param token - The token string to verify.
+   * @param publicKey - The RSA public key for verification.
+   * @returns A promise resolving to the decoded and verified payload.
+   * @throws {UnauthorizedError} If verification fails or the token is expired.
    */
   async verifyToken<T extends object>(
     token: string,
@@ -98,7 +118,11 @@ export class JwtService {
   }
 
   /**
-   * Decode Token without verification (no key required)
+   * Decodes a JWT token without verification.
+   * Note: This does not verify the signature nor the expiration.
+   * @param token - The token string to decode.
+   * @returns The decoded payload.
+   * @throws {BadRequestError} If the token is malformed.
    */
   decodeToken<T>(token: string): T {
     try {
