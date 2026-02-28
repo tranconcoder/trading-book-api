@@ -1,9 +1,10 @@
 import appConfig, { type AppConfig } from "@/configs/app.config";
-import { Inject, Injectable, Res } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import googleOauth2Config, {
   type GoogleOAuth2Config,
 } from "./google-oauth2.config";
 import { OkResponse } from "@/core/response";
+import { Response } from "express";
 
 export interface GoogleUser {
   email: string;
@@ -38,6 +39,6 @@ export class GoogleOauth2Service {
         redirectUrl,
       },
       "Đăng nhập Google thành công",
-    );
+    ).sendResponse(res);
   }
 }

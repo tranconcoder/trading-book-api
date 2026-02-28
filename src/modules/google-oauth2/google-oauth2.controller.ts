@@ -9,7 +9,7 @@ import {
 import { GoogleOauth2Service, GoogleUser } from "./google-oauth2.service";
 import { GoogleOauth2Guard } from "./google-oauth2.guard";
 import { GoogleOauth2Filter } from "./google-oauth2.filter";
-import type { Request } from "express";
+import type { Request, Response } from "express";
 
 @Controller("auth")
 export class GoogleOauth2Controller {
@@ -23,6 +23,9 @@ export class GoogleOauth2Controller {
   @UseGuards(GoogleOauth2Guard)
   @UseFilters(GoogleOauth2Filter)
   googleCallback(@Req() req: Request, @Res() res: Response) {
+    console.log({
+      data: req.user,
+    });
     return this.googleOauth2Service.handleCallback(
       res,
       req.user as any as GoogleUser,

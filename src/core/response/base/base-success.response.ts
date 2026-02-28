@@ -1,5 +1,6 @@
 import { IResponse } from "../response.interface";
 import { SuccessCode } from "../response.enum";
+import { Response } from "express";
 
 /**
  * Base class for all success responses.
@@ -24,5 +25,12 @@ export class BaseSuccessResponse<T = unknown> implements IResponse<T> {
     this.statusCode = statusCode;
     this.code = code;
     this.timestamp = new Date().toISOString();
+  }
+
+  /**
+   * Send this success response using the provided Express response object.
+   */
+  public sendResponse(res: Response) {
+    return res.status(this.statusCode || 200).json(this);
   }
 }

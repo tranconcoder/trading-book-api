@@ -6,12 +6,14 @@ import googleOauth2Config from "./google-oauth2.config";
 import { GoogleStrategy } from "./google-oauth2.strategy";
 import appConfig from "@config/app.config";
 import vluteConfig from "@config/vlute.config";
+import { UserModule } from "../user/user.module";
 
 @Module({
   imports: [
     ConfigModule.forFeature(googleOauth2Config),
     ConfigModule.forFeature(appConfig),
     ConfigModule.forFeature(vluteConfig),
+    UserModule,
   ],
   controllers: [GoogleOauth2Controller],
   providers: [GoogleOauth2Service, GoogleStrategy],

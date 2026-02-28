@@ -1,5 +1,6 @@
 import { IResponse } from "../response.interface";
 import { ErrorCode } from "../response.enum";
+import { Response } from "express";
 
 /**
  * Base class for all error responses.
@@ -23,5 +24,17 @@ export class BaseErrorResponse extends Error implements IResponse<never> {
     // Ensure the prototype is correctly set for instanceOf checks
     Object.setPrototypeOf(this, new.target.prototype);
     Error.captureStackTrace?.(this, this.constructor);
+  }
+
+  /**
+   * Send this error response using the provided Express response object.
+   */
+  public sendResponse(res: Response) {
+    return res.status(this.statusCode || 500).json({
+      success: this.success,
+      code: this.code,
+      message: this.message,
+      timestamp: this.timestamp,
+    });
   }
 }
