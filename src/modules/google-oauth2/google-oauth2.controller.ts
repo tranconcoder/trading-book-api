@@ -1,5 +1,12 @@
-import { Controller, Get, Req, UseGuards, UseFilters } from "@nestjs/common";
-import { GoogleOauth2Service } from "./google-oauth2.service";
+import {
+  Controller,
+  Get,
+  Req,
+  UseGuards,
+  UseFilters,
+  Res,
+} from "@nestjs/common";
+import { GoogleOauth2Service, GoogleUser } from "./google-oauth2.service";
 import { GoogleOauth2Guard } from "./google-oauth2.guard";
 import { GoogleOauth2Filter } from "./google-oauth2.filter";
 import type { Request } from "express";
@@ -15,7 +22,10 @@ export class GoogleOauth2Controller {
   @Get("google/callback")
   @UseGuards(GoogleOauth2Guard)
   @UseFilters(GoogleOauth2Filter)
-  googleCallback(@Req() req: Request) {
-    return this.googleOauth2Service.handleCallback(req.user);
+  googleCallback(@Req() req: Request, @Res() res: Response) {
+    return this.googleOauth2Service.handleCallback(
+      res,
+      req.user as any as GoogleUser,
+    );
   }
 }

@@ -24,7 +24,7 @@ export class GoogleOauth2Service {
     private readonly googleOauth2Config: GoogleOAuth2Config,
   ) {}
 
-  handleCallback(@Res() res, user: GoogleUser) {
+  handleCallback(res: Response, user: GoogleUser) {
     const redirectUrl = `${this.appConfig.clientUrl}${this.googleOauth2Config.redirectUiUrl}`;
 
     return new OkResponse(
