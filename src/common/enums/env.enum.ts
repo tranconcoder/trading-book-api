@@ -21,4 +21,10 @@ export enum EEnvKey {
   dbUser = "DB_USER",
   dbPassword = "DB_PASSWORD",
   dbName = "DB_NAME",
+
+  // Redis
+  redisHost = "REDIS_HOST",
+  redisPort = "REDIS_PORT",
+  redisPassword = "REDIS_PASSWORD",
+  redisTtl = "REDIS_TTL",
 }

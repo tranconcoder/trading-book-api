@@ -1,44 +1,53 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import appConfig, { getEnvPath } from "../../configs/app.config";
 import { HealthModule } from "../health/health.module";
+import { CacheModule } from "@nestjs/cache-manager";
+import redisConfig, { RedisConfig } from "../../configs/redis.config";
+import { redisStore } from "cache-manager-redis-yet";
 import { GoogleOauth2Module } from "../google-oauth2/google-oauth2.module";
-
 import { TypeOrmModule } from "@nestjs/typeorm";
-import databaseConfig, {
-  DATABASE_CONFIG_NAMESPACE,
-} from "../../configs/database.config";
+import databaseConfig, { DatabaseConfig } from "../../configs/database.config";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: getEnvPath(),
-      load: [appConfig, databaseConfig],
+      load: [appConfig, databaseConfig, redisConfig],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      inject: [databaseConfig.KEY],
+      useFactory: (dbConfig: DatabaseConfig) => ({
         type: "postgres" as const,
-        host: configService.get<string>(`${DATABASE_CONFIG_NAMESPACE}.host`),
-        port: configService.get<number>(`${DATABASE_CONFIG_NAMESPACE}.port`),
-        username: configService.get<string>(
-          `${DATABASE_CONFIG_NAMESPACE}.username`,
-        ),
-        password: configService.get<string>(
-          `${DATABASE_CONFIG_NAMESPACE}.password`,
-        ),
-        database: configService.get<string>(
-          `${DATABASE_CONFIG_NAMESPACE}.database`,
-        ),
+        host: dbConfig.host,
+        port: dbConfig.port,
+        username: dbConfig.username,
+        password: dbConfig.password,
+        database: dbConfig.database,
         autoLoadEntities: true,
         synchronize: false,
         migrationsRun: true,
         migrations: [__dirname + "/../../migrations/*.ts"],
       }),
+    }),
+    CacheModule.registerAsync({
+      inject: [redisConfig.KEY],
+      isGlobal: true,
+      useFactory: async (rConfig: RedisConfig) => {
+        return {
+          store: await redisStore({
+            socket: {
+              host: rConfig.host,
+              port: rConfig.port,
+            },
+            password: rConfig.password,
+            ttl: rConfig.ttl ? rConfig.ttl * 1000 : undefined,
+          }),
+        };
+      },
     }),
     HealthModule,
     GoogleOauth2Module,
