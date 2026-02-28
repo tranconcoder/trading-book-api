@@ -6,6 +6,7 @@ import googleOauth2Config, {
 } from "./google-oauth2.config";
 import appConfig, { type AppConfig } from "@config/app.config";
 import vluteConfig, { type VluteConfig } from "@config/vlute.config";
+import { ForbiddenError } from "@/core/response";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -38,7 +39,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 
     if (!email || !email.endsWith(this.vlute.studentEmailSuffix)) {
       return done(
-        new UnauthorizedException(
+        new ForbiddenError(
           `Only ${this.vlute.studentEmailSuffix} emails are allowed`,
         ),
         false,
