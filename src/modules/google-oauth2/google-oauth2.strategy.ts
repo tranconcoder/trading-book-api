@@ -45,7 +45,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
    * @param done - Callback to Passport.
    * @throws {ForbiddenError} If the email domain is not allowed or profile info is incomplete.
    */
-  validate(
+  async validate(
     accessToken: string,
     refreshToken: string,
     profile: Profile,
@@ -99,7 +99,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     };
 
     // Sync user data
-    this.userService.syncUser({
+    await this.userService.syncUser({
       email: validatedEmail,
       firstName,
       lastName,
