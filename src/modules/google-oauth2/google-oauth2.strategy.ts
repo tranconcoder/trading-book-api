@@ -8,6 +8,8 @@ import appConfig, { type AppConfig } from "@config/app.config";
 import vluteConfig, { type VluteConfig } from "@config/vlute.config";
 
 import { ErrorCode, ErrorMessage, ForbiddenError } from "@/core/response";
+import { UserService } from "../user/user.service";
+import { createSyncUserSchema } from "./google-oauth2.validation";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -18,6 +20,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     private app: AppConfig,
     @Inject(vluteConfig.KEY)
     private vlute: VluteConfig,
+    private userService: UserService,
   ) {
     const callbackURL = `http://${app.serverHost}:${app.serverPort}${config.callbackUrl}`;
 
@@ -38,28 +41,57 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     const { name, emails, photos } = profile;
     const email = emails?.[0]?.value;
 
-    if (!email) {
-      throw new ForbiddenError(
-        ErrorMessage.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
-        ErrorCode.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
-      );
-    }
-
-    if (!email.endsWith("@" + this.vlute.studentEmailSuffix)) {
-      throw new ForbiddenError(
-        ErrorMessage.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
-        ErrorCode.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
-      );
-    }
-
-    const user = {
+    // Validate using Zod
+    const schema = createSyncUserSchema(this.vlute.studentEmailSuffix);
+    const validationResult = schema.safeParse({
       email,
       firstName: name?.givenName,
       lastName: name?.familyName,
-      picture: photos?.[0]?.value,
+      avatar: photos?.[0]?.value,
+    });
+
+    if (!validationResult.success) {
+      const issues = validationResult.error.issues;
+      const isInvalidDomain = issues.some(
+        (i) => i.message === "INVALID_DOMAIN",
+      );
+
+      if (isInvalidDomain) {
+        throw new ForbiddenError(
+          ErrorMessage.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
+          ErrorCode.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
+        );
+      }
+
+      throw new ForbiddenError(
+        ErrorMessage.GOOGLE_OAUTH2_PROFILE_INFO_INCOMPLETE,
+        ErrorCode.GOOGLE_OAUTH2_PROFILE_INFO_INCOMPLETE,
+      );
+    }
+
+    const {
+      firstName,
+      lastName,
+      avatar,
+      email: validatedEmail,
+    } = validationResult.data;
+
+    const user = {
+      email: validatedEmail,
+      firstName,
+      lastName,
+      picture: avatar,
       accessToken,
       refreshToken,
     };
+
+    // Sync user data
+    this.userService.syncUser({
+      email: validatedEmail,
+      firstName,
+      lastName,
+      avatar,
+    });
 
     done(null, user);
   }
