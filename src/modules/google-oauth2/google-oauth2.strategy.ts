@@ -5,8 +5,8 @@ import googleOauth2Config, {
   type GoogleOAuth2Config,
 } from "./google-oauth2.config";
 import appConfig, { type AppConfig } from "@config/app.config";
-import vluteConfig, { type VluteConfig } from "@config/vlute.config";
-import { ForbiddenError } from "@/core/response";
+
+import { ErrorCode, ForbiddenError } from "@/core/response";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -15,8 +15,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     private config: GoogleOAuth2Config,
     @Inject(appConfig.KEY)
     private app: AppConfig,
-    @Inject(vluteConfig.KEY)
-    private vlute: VluteConfig,
   ) {
     const callbackURL = `http://${app.serverHost}:${app.serverPort}${config.callbackUrl}`;
 
@@ -37,12 +35,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     const { name, emails, photos } = profile;
     const email = emails?.[0]?.value;
 
-    if (!email || !email.endsWith(this.vlute.studentEmailSuffix)) {
-      return done(
-        new ForbiddenError(
-          `Only ${this.vlute.studentEmailSuffix} emails are allowed`,
-        ),
-        false,
+    if (!email) {
+      throw new ForbiddenError(
+        "Không tìm thấy email từ tài khoản Google",
+        ErrorCode.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
       );
     }
 

@@ -11,5 +11,6 @@ export enum SuccessCode {
  * Example: MISSING_PASSWORD, INVALID_SEMESTER, BOOK_NOT_FOUND, ...
  */
 export enum ErrorCode {
-  // Add specific codes here
+  // Google OAuth2.0
+  GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX = "GGOA000000",
 }
