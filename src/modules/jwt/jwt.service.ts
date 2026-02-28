@@ -8,6 +8,7 @@ import {
   UnauthorizedError,
   BadRequestError,
 } from "@/core/response/errors";
+import { JwtPayload } from "./jwt";
 
 @Injectable()
 export class JwtService {
@@ -21,7 +22,7 @@ export class JwtService {
    * Generate Access Token using RSA Private Key
    */
   async generateAccessToken(
-    payload: Record<string, unknown>,
+    payload: JwtPayload,
     privateKey: string,
   ): Promise<string> {
     try {
@@ -41,7 +42,7 @@ export class JwtService {
    * Generate Refresh Token using RSA Private Key
    */
   async generateRefreshToken(
-    payload: Record<string, unknown>,
+    payload: JwtPayload,
     privateKey: string,
   ): Promise<string> {
     try {
@@ -60,10 +61,7 @@ export class JwtService {
   /**
    * Generate Token Pair (Access + Refresh)
    */
-  async generateTokenPair(
-    payload: Record<string, unknown>,
-    privateKey: string,
-  ) {
+  async generateTokenPair(payload: JwtPayload, privateKey: string) {
     try {
       const [accessToken, refreshToken] = await Promise.all([
         this.generateAccessToken(payload, privateKey),

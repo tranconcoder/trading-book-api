@@ -10,6 +10,10 @@ import { redisStore } from "cache-manager-redis-yet";
 import { GoogleOauth2Module } from "../google-oauth2/google-oauth2.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import databaseConfig, { DatabaseConfig } from "../../configs/database.config";
+import { EncryptModule } from "../encrypt/encrypt.module";
+import { JwtModule } from "../jwt/jwt.module";
+import { UserModule } from "../user/user.module";
+import { KeyTokenModule } from "../key-token/key-token.module";
 
 @Module({
   imports: [
@@ -50,6 +54,10 @@ import databaseConfig, { DatabaseConfig } from "../../configs/database.config";
       },
     }),
     HealthModule,
+    EncryptModule,
+    JwtModule,
+    UserModule,
+    KeyTokenModule,
     GoogleOauth2Module,
   ],
   controllers: [AppController],
