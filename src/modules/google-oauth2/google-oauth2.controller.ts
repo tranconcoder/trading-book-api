@@ -23,9 +23,6 @@ export class GoogleOauth2Controller {
   @UseGuards(GoogleOauth2Guard)
   @UseFilters(GoogleOauth2Filter)
   googleCallback(@Req() req: Request, @Res() res: Response) {
-    console.log({
-      data: req.user,
-    });
     return this.googleOauth2Service.handleCallback(
       res,
       req.user as any as GoogleUser,
