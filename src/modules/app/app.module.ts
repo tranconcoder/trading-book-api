@@ -11,7 +11,7 @@ import { GoogleOauth2Module } from "../google-oauth2/google-oauth2.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import databaseConfig, { DatabaseConfig } from "../../configs/database.config";
 import { EncryptModule } from "../encrypt/encrypt.module";
-import { JwtModule } from "../jwt/jwt.module";
+import { JwtTokenModule } from "../jwt-token/jwt.module";
 import { UserModule } from "../user/user.module";
 import { KeyTokenModule } from "../key-token/key-token.module";
 
@@ -61,7 +61,7 @@ import { KeyTokenModule } from "../key-token/key-token.module";
     }),
     HealthModule,
     EncryptModule,
-    JwtModule,
+    JwtTokenModule,
     UserModule,
     KeyTokenModule,
     GoogleOauth2Module,

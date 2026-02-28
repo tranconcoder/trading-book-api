@@ -6,12 +6,12 @@ import type { StringValue } from "ms";
 /**
  * Namespace for JWT-related configuration.
  */
-export const JWT_CONFIG_NAMESPACE = "jwt";
+export const JWT_CONFIG_NAMESPACE = "jwt_token";
 
 /**
  * Interface representing the JWT configuration settings.
  */
-export interface JwtConfig {
+export interface JwtTokenConfig {
   /**
    * Expiration time for access tokens (e.g., '15m').
    */
@@ -39,7 +39,7 @@ export interface JwtConfig {
  */
 export default registerAs(
   JWT_CONFIG_NAMESPACE,
-  (): JwtConfig => ({
+  (): JwtTokenConfig => ({
     accessExpires: Env.get(EEnvKey.jwtAccessExpires, "15m") as StringValue,
     refreshExpires: Env.get(EEnvKey.jwtRefreshExpires, "7d") as StringValue,
 

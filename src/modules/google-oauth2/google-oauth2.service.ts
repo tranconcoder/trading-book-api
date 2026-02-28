@@ -5,10 +5,7 @@ import googleOauth2Config, {
 } from "./google-oauth2.config";
 import { Response } from "express";
 import { KeyTokenService } from "../key-token/key-token.service";
-import {
-  AUTH_COOKIES,
-  DEFAULT_COOKIE_OPTIONS,
-} from "@/common/constants/auth.constant";
+import { AUTH_COOKIES, DEFAULT_COOKIE_OPTIONS } from "./google-oauth2.constant";
 
 /**
  * Interface representing user information returned from the Google OAuth2 flow.

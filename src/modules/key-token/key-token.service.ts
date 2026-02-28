@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { type Cache } from "cache-manager";
 import { EncryptService } from "../encrypt/encrypt.service";
-import { JwtService } from "../jwt/jwt.service";
-import type { JwtPayload } from "../jwt/jwt";
+import { JwtTokenService } from "../jwt-token/jwt.service";
+import type { JwtTokenPayload } from "../jwt-token/jwt";
 import { KeyToken } from "./entities/key-token.entity";
 import { InternalServerError } from "@/core/response/errors";
 import keyTokenConfig from "./key-token.config";
@@ -18,7 +18,7 @@ import { KeyTokenUtil } from "./key-token.util";
 export class KeyTokenService {
   constructor(
     private readonly encryptService: EncryptService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtTokenService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
     @Inject(keyTokenConfig.KEY)
@@ -33,7 +33,7 @@ export class KeyTokenService {
    * @returns A promise resolving to an object containing accessToken and refreshToken.
    * @throws {InternalServerError} If key generation, signing, or storage fails.
    */
-  public async createKeyToken(jwtPayload: JwtPayload) {
+  public async createKeyToken(jwtPayload: JwtTokenPayload) {
     const { userId } = jwtPayload;
 
     // 1. Create RSA key pair
@@ -66,6 +66,29 @@ export class KeyTokenService {
       return { accessToken, refreshToken };
     } catch {
       throw new InternalServerError("Failed to store key token in Redis");
+    }
+  }
+
+  /**
+   * Retrieves the KeyToken for a specific user from Redis.
+   * @param userId - The ID of the user whose KeyToken to retrieve.
+   * @returns A promise resolving to the KeyToken or null if not found.
+   */
+  public async getKeyToken(userId: string): Promise<KeyToken | null> {
+    const redisKey = this.keyTokenUtil.getKeyTokenRedisKey(
+      this.config.redisPrefix,
+      userId,
+    );
+
+    const keyTokenStr = await this.cacheManager.get<string>(redisKey);
+    if (!keyTokenStr) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(keyTokenStr) as KeyToken;
+    } catch {
+      return null;
     }
   }
 }

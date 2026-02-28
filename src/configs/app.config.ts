@@ -25,6 +25,9 @@ const appConfig = registerAs(APP_CONFIG_NAMESPACE, () => ({
   // Server path
   serverHost: Env.get(EEnvKey.serverHost, DEFAULT_HOST),
   serverPort: SERVER_PORT,
+
+  // CORS
+  corsUrlList: Env.getArray(EEnvKey.corsUrlList, ["http://localhost:3001"]),
 }));
 
 export default appConfig;

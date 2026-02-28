@@ -8,14 +8,14 @@ import {
   UnauthorizedError,
   BadRequestError,
 } from "@/core/response/errors";
-import { JwtPayload } from "./jwt";
+import { JwtTokenPayload } from "./jwt";
 
 /**
  * Service for managing JSON Web Tokens (JWT).
  * Provides methods for generating token pairs, verifying tokens, and decoding tokens.
  */
 @Injectable()
-export class JwtService {
+export class JwtTokenService {
   constructor(
     private readonly jwtService: NestJwtService,
     @Inject(jwtConfig.KEY)
@@ -30,7 +30,7 @@ export class JwtService {
    * @throws {InternalServerError} If signing fails.
    */
   async generateAccessToken(
-    payload: JwtPayload,
+    payload: JwtTokenPayload,
     privateKey: string,
   ): Promise<string> {
     try {
@@ -54,7 +54,7 @@ export class JwtService {
    * @throws {InternalServerError} If signing fails.
    */
   async generateRefreshToken(
-    payload: JwtPayload,
+    payload: JwtTokenPayload,
     privateKey: string,
   ): Promise<string> {
     try {
@@ -77,7 +77,7 @@ export class JwtService {
    * @returns An object containing accessToken and refreshToken.
    * @throws {InternalServerError} If token generation fails.
    */
-  async generateTokenPair(payload: JwtPayload, privateKey: string) {
+  async generateTokenPair(payload: JwtTokenPayload, privateKey: string) {
     try {
       const [accessToken, refreshToken] = await Promise.all([
         this.generateAccessToken(payload, privateKey),
@@ -98,12 +98,12 @@ export class JwtService {
    * @returns A promise resolving to the decoded and verified payload.
    * @throws {UnauthorizedError} If verification fails or the token is expired.
    */
-  async verifyToken<T extends object>(
+  async verifyToken(
     token: string,
     publicKey: string,
-  ): Promise<T> {
+  ): Promise<JwtTokenPayload> {
     try {
-      return await this.jwtService.verifyAsync<T>(token, {
+      return await this.jwtService.verifyAsync<JwtTokenPayload>(token, {
         publicKey,
         algorithms: [
           this.config.accessAlgorithm as Algorithm,
@@ -124,9 +124,9 @@ export class JwtService {
    * @returns The decoded payload.
    * @throws {BadRequestError} If the token is malformed.
    */
-  decodeToken<T>(token: string): T {
+  decodeToken(token: string): JwtTokenPayload {
     try {
-      const decoded = this.jwtService.decode<T>(token);
+      const decoded = this.jwtService.decode<JwtTokenPayload>(token);
       if (!decoded) {
         throw new BadRequestError("Malformed JWT token");
       }

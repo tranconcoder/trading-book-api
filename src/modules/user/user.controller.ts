@@ -1,10 +1,18 @@
-import { Controller, Get, Req, UnauthorizedException } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Req,
+  UnauthorizedException,
+  UseGuards,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserUtil } from "./user.util";
 import type { Request } from "express";
+import { AuthGuard } from "../auth/auth.guard";
 
 /**
  * Controller for handling user-related API endpoints.
+ * This includes user data synchronization, profile management, and role-based access control.
  */
 @Controller("user")
 export class UserController {
@@ -20,6 +28,7 @@ export class UserController {
    * @throws {UnauthorizedException} If the user is not found in the request or database.
    */
   @Get("profile")
+  @UseGuards(AuthGuard)
   async getProfile(@Req() req: Request) {
     const userId = this.userUtil.getUserIdFromRequest(req);
     const user = await this.userService.getUserProfile(userId);

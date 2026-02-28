@@ -4,6 +4,7 @@ export enum EEnvKey {
   serverHost = "SERVER_HOST",
   serverPort = "SERVER_PORT",
   clientUrl = "CLIENT_URL",
+  corsUrlList = "CORS_URL_LIST",
 
   // Google Oauth2
   googleOauth2ClientId = "GOOGLE_OAUTH2_CLIENT_ID",

@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import type { JwtPayload } from "../jwt/jwt";
+import type { JwtTokenPayload } from "../jwt-token/jwt";
 import { User } from "./entities/user.entity";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
@@ -15,7 +15,7 @@ export class UserUtil {
    * @throws {UnauthorizedException} If the user payload or user ID is missing.
    */
   getUserIdFromRequest(req: Request): string {
-    const userPayload = req.user as JwtPayload | undefined;
+    const userPayload = req.user as JwtTokenPayload | undefined;
     if (!userPayload || !userPayload.userId) {
       throw new UnauthorizedException("User not found in request");
     }
