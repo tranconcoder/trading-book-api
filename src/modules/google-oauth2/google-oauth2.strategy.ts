@@ -5,6 +5,7 @@ import googleOauth2Config, {
   type GoogleOAuth2Config,
 } from "./google-oauth2.config";
 import appConfig, { type AppConfig } from "@config/app.config";
+import vluteConfig, { type VluteConfig } from "@config/vlute.config";
 
 import { ErrorCode, ErrorMessage, ForbiddenError } from "@/core/response";
 
@@ -15,6 +16,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     private config: GoogleOAuth2Config,
     @Inject(appConfig.KEY)
     private app: AppConfig,
+    @Inject(vluteConfig.KEY)
+    private vlute: VluteConfig,
   ) {
     const callbackURL = `http://${app.serverHost}:${app.serverPort}${config.callbackUrl}`;
 
@@ -39,6 +42,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
       throw new ForbiddenError(
         ErrorMessage.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
         ErrorCode.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
+      );
+    }
+
+    if (!email.endsWith("@" + this.vlute.studentEmailSuffix)) {
+      throw new ForbiddenError(
+        ErrorMessage.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
+        ErrorCode.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
       );
     }
 
