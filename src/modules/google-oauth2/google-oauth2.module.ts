@@ -7,6 +7,7 @@ import { GoogleStrategy } from "./google-oauth2.strategy";
 import appConfig from "@config/app.config";
 import vluteConfig from "@config/vlute.config";
 import { UserModule } from "../user/user.module";
+import { KeyTokenModule } from "../key-token/key-token.module";
 
 /**
  * Module responsible for Google OAuth2 authentication.
@@ -18,6 +19,7 @@ import { UserModule } from "../user/user.module";
     ConfigModule.forFeature(appConfig),
     ConfigModule.forFeature(vluteConfig),
     UserModule,
+    KeyTokenModule,
   ],
   controllers: [GoogleOauth2Controller],
   providers: [GoogleOauth2Service, GoogleStrategy],

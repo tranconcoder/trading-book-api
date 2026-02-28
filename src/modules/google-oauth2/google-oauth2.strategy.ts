@@ -99,13 +99,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     };
 
     // Sync user data
-    await this.userService.syncUser({
+    const dbUser = await this.userService.syncUser({
       email: validatedEmail,
       firstName,
       lastName,
       avatar,
     });
 
-    done(null, user);
+    done(null, {
+      ...user,
+      id: dbUser.id,
+    });
   }
 }
