@@ -36,9 +36,12 @@ export class GoogleOauth2Filter implements ExceptionFilter {
       errorMessage = exception.message;
     }
 
+    const encodedMessage = Buffer.from(errorMessage, "utf-8").toString(
+      "base64",
+    );
     const params = new URLSearchParams({
       error: errorCode,
-      message: errorMessage,
+      message: encodedMessage,
     });
     const redirectUrl = `${this.app.clientUrl}/login/fail?${params.toString()}`;
 
