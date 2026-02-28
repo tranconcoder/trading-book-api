@@ -27,4 +27,10 @@ export enum EEnvKey {
   redisPort = "REDIS_PORT",
   redisPassword = "REDIS_PASSWORD",
   redisTtl = "REDIS_TTL",
+
+  // JWT
+  jwtAccessExpires = "JWT_ACCESS_EXPIRES",
+  jwtRefreshExpires = "JWT_REFRESH_EXPIRES",
+  jwtAccessAlgorithm = "JWT_ACCESS_ALGORITHM",
+  jwtRefreshAlgorithm = "JWT_REFRESH_ALGORITHM",
 }
