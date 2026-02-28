@@ -2,7 +2,7 @@
 export type { IResponse } from "./response.interface";
 
 // Enums (add API-specific codes later)
-export { SuccessCode, ErrorCode } from "./response.enum";
+export { SuccessCode, ErrorCode, ErrorMessage } from "./response.enum";
 
 // Base classes
 export { BaseSuccessResponse } from "./base/base-success.response";

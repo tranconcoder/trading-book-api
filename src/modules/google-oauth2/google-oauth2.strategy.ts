@@ -6,7 +6,7 @@ import googleOauth2Config, {
 } from "./google-oauth2.config";
 import appConfig, { type AppConfig } from "@config/app.config";
 
-import { ErrorCode, ForbiddenError } from "@/core/response";
+import { ErrorCode, ErrorMessage, ForbiddenError } from "@/core/response";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -37,8 +37,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 
     if (!email) {
       throw new ForbiddenError(
-        "Không tìm thấy email từ tài khoản Google",
-        ErrorCode.GOOGLE_OAUTH2_NOT_ALLOW_EMAIL_SUFFIX,
+        ErrorMessage.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
+        ErrorCode.GOOGLE_OAUTH2_EMAIL_NOT_FOUND,
       );
     }
 
