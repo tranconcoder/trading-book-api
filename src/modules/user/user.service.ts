@@ -5,7 +5,7 @@ import { User } from "./entities/user.entity";
 import { type SyncUserDto } from "./dto/sync-user.dto";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { type Cache } from "cache-manager";
-import { UserUtil } from "./user.util";
+import { UserUtil } from "../access-control/user.util";
 import userConfig, { type UserConfig } from "./user.config";
 
 /**

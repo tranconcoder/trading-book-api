@@ -11,15 +11,12 @@ import { GoogleOauth2Module } from "../google-oauth2/google-oauth2.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import databaseConfig, { DatabaseConfig } from "../../configs/database.config";
 import { EncryptModule } from "../encrypt/encrypt.module";
-import { JwtTokenModule } from "../jwt-token/jwt.module";
 import { UserModule } from "../user/user.module";
-import { KeyTokenModule } from "../key-token/key-token.module";
+import { AuthModule } from "../auth/auth.module";
+import { AccessControlModule } from "../access-control/access-control.module";
 
 /**
  * The root module of the application.
- * Responsibility:
- * - Initialize global configurations (Env, Database, Cache).
- * - Import and orchestrate all feature modules.
  */
 @Module({
   imports: [
@@ -61,10 +58,10 @@ import { KeyTokenModule } from "../key-token/key-token.module";
     }),
     HealthModule,
     EncryptModule,
-    JwtTokenModule,
-    UserModule,
-    KeyTokenModule,
+    AccessControlModule,
     GoogleOauth2Module,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

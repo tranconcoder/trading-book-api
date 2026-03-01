@@ -42,21 +42,34 @@ export class KeyTokenService {
 
     // 2. Generate Jwt token pair using the private key
     const { accessToken, refreshToken } =
-      await this.jwtService.generateTokenPair(jwtPayload, privateKey);
+      await this.jwtService.generateTokenPair({
+        payload: jwtPayload,
+        privateKey,
+      });
 
     // 3. Prepare KeyToken entity
+    const redisKey = this.keyTokenUtil.getKeyTokenRedisKey(
+      this.config.redisPrefix,
+      userId,
+    );
+    const oldKeyToken = await this.cacheManager.get<KeyToken>(redisKey);
+    let publicKeyUsed: string[] = [];
+
+    if (oldKeyToken?.publicKey) publicKeyUsed.unshift(oldKeyToken.publicKey);
+    if (
+      Array.isArray(oldKeyToken?.publicKeyUsed) &&
+      oldKeyToken.publicKeyUsed.length > 0
+    )
+      publicKeyUsed = [...publicKeyUsed, ...oldKeyToken.publicKeyUsed];
+
     const keyToken = new KeyToken({
       userId,
       publicKey,
+      publicKeyUsed: publicKeyUsed.slice(0, 3), // Limit 3 old public key on history
     });
 
     try {
       // 4. Store to Redis
-      const redisKey = this.keyTokenUtil.getKeyTokenRedisKey(
-        this.config.redisPrefix,
-        userId,
-      );
-
       await this.cacheManager.set(
         redisKey,
         JSON.stringify(keyToken),

@@ -6,9 +6,9 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { UserUtil } from "./user.util";
+import { UserUtil } from "../access-control/user.util";
 import type { Request } from "express";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../access-control/auth.guard";
 
 /**
  * Controller for handling user-related API endpoints.

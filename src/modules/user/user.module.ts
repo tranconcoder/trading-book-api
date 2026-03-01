@@ -5,8 +5,7 @@ import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { ConfigModule } from "@nestjs/config";
 import userConfig from "./user.config";
-import { UserUtil } from "./user.util";
-import { AuthModule } from "../auth/auth.module";
+import { AccessControlModule } from "../access-control/access-control.module";
 
 /**
  * Module responsible for managing user-related functionality.
@@ -16,10 +15,10 @@ import { AuthModule } from "../auth/auth.module";
   imports: [
     TypeOrmModule.forFeature([User]),
     ConfigModule.forFeature(userConfig),
-    AuthModule,
+    AccessControlModule,
   ],
   controllers: [UserController],
-  providers: [UserService, UserUtil],
-  exports: [UserService, UserUtil],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

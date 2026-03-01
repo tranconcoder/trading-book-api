@@ -2,9 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { JwtTokenService } from "../jwt-token/jwt.service";
 import { KeyTokenService } from "../key-token/key-token.service";
 import { UnauthorizedError } from "@/core/response/errors";
-import { AUTH_COOKIES } from "../google-oauth2/google-oauth2.constant";
+import { AUTH_COOKIES } from "./auth.constant";
 import { JwtTokenPayload } from "../jwt-token/jwt";
 import type { Request } from "express";
+import { ErrorCode, ErrorMessage } from "@/core/response";
 
 interface AuthorizedRequest extends Request {
   cookies: Record<string, string | undefined>;
@@ -19,16 +20,16 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<AuthorizedRequest>();
-    const token = request?.cookies?.[AUTH_COOKIES.ACCESS_TOKEN];
-
-    if (!token) {
-      throw new UnauthorizedError("Access token not found in cookies");
-    }
-
     try {
+      const request = context.switchToHttp().getRequest<AuthorizedRequest>();
+      const token = request?.cookies?.[AUTH_COOKIES.ACCESS_TOKEN];
+
+      if (!token) {
+        throw new UnauthorizedError("Access token not found in cookies");
+      }
+
       // 1. Decode token to get userId (unverified)
-      const decodedPayload = this.jwtService.decodeToken(token);
+      const decodedPayload = this.jwtService.decodeToken({ token });
       const userId = decodedPayload?.userId;
 
       if (!userId) {
@@ -42,18 +43,20 @@ export class AuthGuard implements CanActivate {
       }
 
       // 3. Verify token with publicKey
-      const verifiedPayload = await this.jwtService.verifyToken(
+      const verifiedPayload = await this.jwtService.verifyToken({
         token,
-        keyToken.publicKey,
-      );
+        publicKey: keyToken.publicKey,
+      });
 
       // 4. Attach to request
       request.user = verifiedPayload;
 
       return true;
-    } catch (error) {
-      if (error instanceof UnauthorizedError) throw error;
-      throw new UnauthorizedError("Authentication failed");
+    } catch {
+      throw new UnauthorizedError(
+        ErrorMessage.AUTH_JWT_FORBIDDEN,
+        ErrorCode.AUTH_JWT_FORBIDDEN,
+      );
     }
   }
 }

@@ -18,9 +18,9 @@ export class KeyToken {
    */
   publicKeyUsed: string[];
 
-  constructor(partial: Omit<KeyToken, "publicKeyUsed">) {
+  constructor(partial: KeyToken) {
     this.userId = partial.userId;
     this.publicKey = partial.publicKey;
-    this.publicKeyUsed = [];
+    this.publicKeyUsed = partial.publicKeyUsed;
   }
 }
